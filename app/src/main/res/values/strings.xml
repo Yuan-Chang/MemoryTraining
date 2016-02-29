@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Memory training</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_numbers_page">NumbersPage</string>
+</resources>

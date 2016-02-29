@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="lightgreen">#93FF93</color>
+
+    <color name="headerColor">#eaeaea</color>
+    <color name="headerTextColor">#4D4D4D</color>
+    <color name="fieldTextColor">#333333</color>
+    <color name="fieldUnderLineColor">#efefef</color>
+    <color name="goBackgroundColor">#0573ae</color>
+    <color name="lightBlueColor">#0085E5</color>
+    <color name="hintLightGray">#E0E0E0</color>
+    <color name="hintLightLightGray">#E2E2E2</color>
+    <color name="signup_gray">#999999</color>
+    <color name="pop_up_gray">#FF454444</color>
+
+
+    <color name="blue">#0D6FDF</color>
+    <color name="light_black_shade">#D0CFCF</color>
+    <color name="red_translucent">#CCED1C24</color>
+    <color name="red">#E2041c</color>
+    <color name="red_dark">#b31217</color>
+    <color name="hintColor">#A0A0A0</color>
+    <color name="ninety_Percent_white">#E6FFFFFF</color>
+
+    <color name="tab_indicator_gray">#ECECEC</color>
+    <color name="tab_primary">#FFBFBFBF</color>
+
+    <color name="ninety_percent_black">#A8000000</color>
+    <color name="border_gray">#D1D3D4</color>
+</resources>
