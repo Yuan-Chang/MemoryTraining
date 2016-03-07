@@ -7,6 +7,8 @@ import android.os.Looper;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.github.pwittchen.prefser.library.Prefser;
+
 /**
  * Created by home on 2/28/16.
  */
@@ -18,6 +20,10 @@ public class G {
             instance = new G();
         return instance;
     }
+
+    final static public String NumberSettingDetail = "NumberSettingDetail";
+
+    public Prefser prefser;
 
     static public void runOnUIThread(Runnable runnable) {
         new Handler(Looper.getMainLooper()).post(runnable);

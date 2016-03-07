@@ -6,12 +6,7 @@
     <item
         android:id="@+id/restart"
         android:orderInCategory="100"
-        android:title="Restart"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/hint"
-        android:orderInCategory="100"
-        android:title="Hint"
+        android:title="Start new session"
         app:showAsAction="never" />
 
     <item

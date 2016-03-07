@@ -18,9 +18,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NumbersPage"
+            android:name=".Numbers.NumbersPage"
             android:label="@string/title_activity_numbers_page"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity android:name=".Numbers.NumberSettingPage"
+            android:windowSoftInputMode="stateAlwaysVisible"
+            ></activity>
     </application>
 
 </manifest>
