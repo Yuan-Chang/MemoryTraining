@@ -1,16 +1,31 @@
 package com.teeoda.memorytraining.Numbers;
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.view.RxViewGroup;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.teeoda.memorytraining.R;
 import com.teeoda.memorytraining.global.BaseActivity;
+import com.teeoda.memorytraining.global.CircleView;
+import com.teeoda.memorytraining.global.G;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
+import rx.Subscription;
 
 /**
  * Created by home on 3/5/16.
@@ -45,16 +60,55 @@ public class NumberAdapter extends BaseAdapter {
         if (convertView == null) {
             LayoutInflater inflater = BaseActivity.getCurrent().getLayoutInflater();
             convertView = inflater.inflate(R.layout.number_gridview_item, parent, false);
-            viewHolder = ViewHolder.create((RelativeLayout)convertView);
+            viewHolder = ViewHolder.create((RelativeLayout) convertView);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        if (getItem(position).num >= 0)
-            viewHolder.mEditText.setText(getItem(position).num+"");
-        else
+        if(viewHolder.textChangedSubscription != null)
+            viewHolder.textChangedSubscription.unsubscribe();
+
+        int num = getItem(position).num;
+        if (num > -1) {
+            viewHolder.mTextView.setText(num + "");
+            viewHolder.mEditText.setText(num + "");
+        }
+        else {
+            viewHolder.mTextView.setText("");
             viewHolder.mEditText.setText("");
+        }
+
+        if (NumbersPage.state != NumbersPage.State.FILLING || !getItem(position).isSelected) {
+
+            viewHolder.mEditText.setVisibility(View.GONE);
+            viewHolder.mTextView.setVisibility(View.VISIBLE);
+            viewHolder.mCircleView.setColor(Color.LTGRAY);
+            viewHolder.mCircleView.invalidate();
+            Log.d("yuan", "in memory page");
+
+        } else {
+            viewHolder.mEditText.setVisibility(View.VISIBLE);
+            viewHolder.mTextView.setVisibility(View.GONE);
+            viewHolder.mEditText.requestFocus();
+            viewHolder.mEditText.setSelected(true);
+            viewHolder.mEditText.setTextIsSelectable(true);
+            viewHolder.mEditText.setCursorVisible(true);
+
+            viewHolder.mCircleView.setColor(Color.RED);
+            viewHolder.mCircleView.invalidate();
+
+            G.showKeyboard(viewHolder.mEditText);
+
+            viewHolder.textChangedSubscription = RxTextView.textChanges(viewHolder.mEditText)
+                    .subscribe(r -> {
+                        if (!r.toString().isEmpty())
+                            getItem(position).num = Integer.valueOf(r.toString());
+                        else
+                            getItem(position).num = -1;
+                        Log.d("yuan", "number : " + r.toString());
+                    });
+        }
 
         return convertView;
     }
@@ -62,20 +116,32 @@ public class NumberAdapter extends BaseAdapter {
     /**
      * ViewHolder class for layout.<br />
      * <br />
-     * Auto-created on 2016-03-05 09:21:19 by Android Layout Finder
+     * Auto-created on 2016-03-12 20:03:33 by Android Layout Finder
      * (http://www.buzzingandroid.com/tools/android-layout-finder)
      */
     private static class ViewHolder {
+        public Subscription textChangedSubscription;
+        public final RelativeLayout mRoot;
+        public final CircleView mCircleView;
         public final EditText mEditText;
+        public final TextView mTextView;
 
-        private ViewHolder(EditText mEditText) {
+        private ViewHolder(RelativeLayout mRoot, CircleView mCircleView, EditText mEditText, TextView mTextView) {
+            this.mRoot = mRoot;
+            this.mCircleView = mCircleView;
             this.mEditText = mEditText;
+            this.mTextView = mTextView;
         }
 
         public static ViewHolder create(RelativeLayout rootView) {
+            RelativeLayout mRoot = (RelativeLayout)rootView.findViewById( R.id.root );
+            CircleView mCircleView = (CircleView)rootView.findViewById( R.id.circleView );
             EditText mEditText = (EditText)rootView.findViewById( R.id.editText );
-            return new ViewHolder( mEditText );
+            TextView mTextView = (TextView)rootView.findViewById( R.id.textView );
+            return new ViewHolder( mRoot, mCircleView, mEditText, mTextView );
         }
     }
+
+
 
 }

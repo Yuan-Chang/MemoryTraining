@@ -3,31 +3,38 @@ package com.teeoda.memorytraining.Numbers;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.pwittchen.prefser.library.Prefser;
 import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxAdapterView;
 import com.teeoda.memorytraining.R;
 import com.teeoda.memorytraining.global.BaseActivity;
 import com.teeoda.memorytraining.global.G;
 import com.teeoda.memorytraining.global.TimerTime;
 
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class NumbersPage extends BaseActivity {
+
+    static public boolean restart = false;
+    static public int state = State.START;
 
     final public static class State{
         final public static int START = 0;
@@ -40,13 +47,16 @@ public class NumbersPage extends BaseActivity {
     NumberAdapter mNumberAdpater;
     ArrayList<NumberItem> mNumbers;
     ArrayList<NumberItem> mFilledNumbers;
-    int state = State.START;
+
     int mCurrentRoundNum = 1;
     rx.Subscription mTimerSub;
     TimerTime mTimerTime;
+    int mHintUsed = 0;
+    int mPreSelectedPos = -1;
+    boolean mFillingDone = false;
+
 
     private RelativeLayout mRootView;
-    private GridView mGridview;
     private RelativeLayout mStartLayout;
     private RelativeLayout mRoundLayout;
     private TextView mRoundText;
@@ -88,16 +98,16 @@ public class NumbersPage extends BaseActivity {
     private RelativeLayout mHintBtn;
     private RelativeLayout mDoneBtn;
     private TextView mDoneBtnText;
+    private GridView mGridview;
 
     /**
      * Find the Views in the layout<br />
      * <br />
-     * Auto-created on 2016-03-07 07:20:29 by Android Layout Finder
+     * Auto-created on 2016-03-08 23:24:56 by Android Layout Finder
      * (http://www.buzzingandroid.com/tools/android-layout-finder)
      */
     private void findViews() {
         mRootView = (RelativeLayout)findViewById( 0 );
-        mGridview = (GridView)findViewById( R.id.gridview );
         mStartLayout = (RelativeLayout)findViewById( R.id.startLayout );
         mRoundLayout = (RelativeLayout)findViewById( R.id.roundLayout );
         mRoundText = (TextView)findViewById( R.id.roundText );
@@ -139,7 +149,9 @@ public class NumbersPage extends BaseActivity {
         mHintBtn = (RelativeLayout)findViewById( R.id.hintBtn );
         mDoneBtn = (RelativeLayout)findViewById( R.id.DoneBtn );
         mDoneBtnText = (TextView)findViewById( R.id.doneBtnText );
+        mGridview = (GridView)findViewById( R.id.gridview );
     }
+
 
 
 
@@ -181,14 +193,65 @@ public class NumbersPage extends BaseActivity {
             if (state == State.MEMORY)
                 showFillingPage();
             else if (state == State.FILLING)
-                showResultPage();
+            {
+                if (mFillingDone)
+                {
+                    showResultPage();
+                }
+                else {
+                    mFillingDone = true;
+                    int current = mPreSelectedPos;
+                    if (current == -1)
+                    {
+                        mFillingDone = false;
+                        mFilledNumbers.get(0).isSelected = true;
+                        mPreSelectedPos = 0;
+                    }
+                    else {
+                        //go to next
+                        current ++;
+                        current = current%mSettingDetail.totalNum;
+
+                        while(current != mPreSelectedPos)
+                        {
+                            if (mFilledNumbers.get(current).num == -1)
+                            {
+                                mFilledNumbers.get(mPreSelectedPos).isSelected =false;
+                                mPreSelectedPos = current;
+                                mFilledNumbers.get(current).isSelected = true;
+                                mFillingDone = false;
+                                break;
+                            }
+                            current ++;
+                            current = current%mSettingDetail.totalNum;
+                        }
+
+                    }
+
+                    if (mFillingDone)
+                    {
+                        if (mDoneBtnText.getText().toString().equals("Next"))
+                            mDoneBtnText.setText("Result");
+                        else
+                            showResultPage();
+
+                    }
+                    else {
+                        mNumberAdpater.notifyDataSetChanged();
+                        mGridview.smoothScrollToPosition(mPreSelectedPos);
+                    }
+                }
+
+            }
         });
 
         RxView.clicks(mResultStartOver).throttleFirst(400,TimeUnit.MILLISECONDS).subscribe(r->{
+            mResultBeatRecord.setVisibility(View.GONE);
             mCurrentRoundNum++;
             showStartPage();
         });
 
+        //not used
         RxView.clicks(mHintBtn).throttleFirst(400,TimeUnit.MILLISECONDS).subscribe(r->{
             showHint();
         });
@@ -198,6 +261,13 @@ public class NumbersPage extends BaseActivity {
     }
 
     void showHint(){
+        mHintUsed++;
+        for (int i = 0; i<mSettingDetail.totalNum ; i++)
+        {
+            if (mNumbers.get(i) != mFilledNumbers.get(i))
+                mFilledNumbers.get(i).showHint = true;
+        }
+        mNumberAdpater.notifyDataSetChanged();
 
     }
 
@@ -214,6 +284,16 @@ public class NumbersPage extends BaseActivity {
         mControlPannel.setVisibility(View.GONE);
         mResultLayout.setVisibility(View.GONE);
         mTime.setText("0s");
+        mPreSelectedPos = -1;
+        mFillingDone = false;
+
+        if (mFilledNumbers != null)
+            mFilledNumbers.clear();
+
+        if (mNumbers != null)
+            mNumbers.clear();
+
+        G.dismissKeyboard();
 
         if (mTimerSub != null)
             mTimerSub.unsubscribe();
@@ -227,21 +307,49 @@ public class NumbersPage extends BaseActivity {
         mAlertText.setVisibility(View.GONE);
         mControlPannel.setVisibility(View.GONE);
         mResultLayout.setVisibility(View.VISIBLE);
+        mResultLayout.bringToFront();
+        mResultLayout.requestFocus();
+
+        G.dismissKeyboard();
 
         if (mTimerSub != null)
             mTimerSub.unsubscribe();
         mResultTimeSpend.setText(mTimerTime.toString());
-        mResultTitleNum.setText(mSettingDetail.totalNum+"");
+        mResultTitleNum.setText(mSettingDetail.totalNum + "");
+
+        mResultHintUsed.setText(mHintUsed + "");
 
         int correctNum = 0;
         for (int i = 0; i<mSettingDetail.totalNum ; i++)
         {
-            if (mNumbers.get(i) == mFilledNumbers.get(i))
+            if (mNumbers.get(i).num == mFilledNumbers.get(i).num)
                 correctNum++;
         }
-        mResultCorrectness.setText(String.format("%d/%d",correctNum,mSettingDetail.totalNum));
+        mResultCorrectness.setText(String.format("%d/%d", correctNum, mSettingDetail.totalNum));
+
+        Prefser prefser = G.getInstance().prefser;
+        String key = "NumberHistroy:"+mSettingDetail.totalNum;
+        int record = prefser.get(key, Integer.class, -1);
+        if (record == -1)
+        {
+            prefser.put(key,mTimerTime.toSeconds());
+        }
+        else if (record > mTimerTime.toSeconds() && correctNum == mSettingDetail.totalNum)
+        {
+            prefser.put(key,mTimerTime.toSeconds());
+            record = mTimerTime.toSeconds();
+            mResultBeatRecord.setVisibility(View.VISIBLE);
+        }
+        String sTime = TimerTime.secondsToString(record);
+        mResultBestRecord.setText(sTime);
+        if (sTime.length() > 7)
+            mResultBestRecord.setTextSize(14);
+        else
+            mResultBestRecord.setTextSize(20);
 
     }
+
+
 
     void showMemoryPage(){
         state = State.MEMORY;
@@ -250,10 +358,11 @@ public class NumbersPage extends BaseActivity {
         mAlertText.setVisibility(View.GONE);
         mControlPannel.setVisibility(View.VISIBLE);
         mResultLayout.setVisibility(View.GONE);
-
+        //mGridview.setClickable(false);
         mReStartBtn.setVisibility(View.VISIBLE);
         mHintBtn.setVisibility(View.GONE);
-        mDoneBtnText.setText("Start");
+        mDoneBtnText.setText("Next");
+        mControlPannel.bringToFront();
 
         if (mNumbers == null)
             mNumbers = new ArrayList<NumberItem>();
@@ -276,9 +385,9 @@ public class NumbersPage extends BaseActivity {
         mAlertText.setVisibility(View.GONE);
         mControlPannel.setVisibility(View.VISIBLE);
         mResultLayout.setVisibility(View.GONE);
-
-        mHintBtn.setVisibility(View.VISIBLE);
-        mDoneBtnText.setText("Result");
+        //mGridview.setClickable(true);
+        //mHintBtn.setVisibility(View.VISIBLE);
+        mDoneBtnText.setText("Next");
 
         ArrayList<NumberItem> numbers = new ArrayList<>();
         for (int i = 0; i<mSettingDetail.totalNum; i++)
@@ -286,8 +395,33 @@ public class NumbersPage extends BaseActivity {
             numbers.add(new NumberItem(-1));
         }
         mFilledNumbers = numbers;
-        mNumberAdpater = new NumberAdapter(numbers);
+
+        mNumberAdpater = new NumberAdapter(mFilledNumbers);
         mGridview.setAdapter(mNumberAdpater);
+
+        mGridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+
+            }
+        });
+
+        RxAdapterView.itemClicks(mGridview).throttleFirst(300,TimeUnit.MILLISECONDS)
+                .subscribe(position -> {
+                    if (mPreSelectedPos != -1)
+                        mFilledNumbers.get(mPreSelectedPos).isSelected = false;
+                    mPreSelectedPos = position;
+
+                    mFilledNumbers.get(position).isSelected = true;
+
+                    mGridview.smoothScrollToPosition(position);
+
+                    mNumberAdpater.notifyDataSetChanged();
+                    Log.d("yuan", "item click pos : " + position);
+
+                });
+
     }
 
 
@@ -296,6 +430,17 @@ public class NumbersPage extends BaseActivity {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_numbers_page, menu);
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (restart)
+        {
+            restart = false;
+            showStartPage();
+        }
     }
 
     @Override

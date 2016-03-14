@@ -44,6 +44,7 @@ public class CircleView extends View {
         int y = getHeight();
         int radius;
         radius = getWidth()/2;
+        paint.setColor(color);
 
         canvas.drawCircle(x / 2, y / 2, radius, paint);
     }

@@ -19,35 +19,36 @@
         android:elevation="10dp">
 
         <RelativeLayout
-            android:layout_marginTop="10dp"
             android:id="@+id/roundLayout"
-            android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp">
 
             <TextView
                 android:id="@+id/roundText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Round :"
                 android:textSize="20dp"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textStyle="bold" />
+
             <TextView
-                android:layout_toRightOf="@id/roundText"
                 android:id="@+id/roundNum"
-                android:text="10"
-                android:layout_marginLeft="5dp"
-                android:textSize="20dp"
-                android:textStyle="bold"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/roundText"
+                android:text="10"
+                android:textSize="20dp"
+                android:textStyle="bold" />
         </RelativeLayout>
 
 
         <LinearLayout
-            android:layout_below="@id/roundLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/roundLayout"
             android:layout_marginTop="15dp"
             android:orientation="vertical">
 
@@ -175,10 +176,10 @@
 
         <RelativeLayout
             android:id="@+id/resultTitleLayout"
-            android:layout_marginTop="10dp"
-            android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp">
 
             <TextView
                 android:id="@+id/resultTitleNum"
@@ -189,17 +190,16 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_marginLeft="5dp"
                 android:id="@+id/resultTitleText"
-                android:layout_toRightOf="@id/resultTitleNum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/resultTitleNum"
                 android:text="numbers"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
         </RelativeLayout>
-
 
 
         <LinearLayout
@@ -230,7 +230,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@id/correctnessText"
                     android:text="30/32"
-                    android:textSize="20dp" />
+                    android:textSize="20sp" />
 
             </RelativeLayout>
 
@@ -284,12 +284,13 @@
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@id/timeSpendText"
                     android:text="30/32"
-                    android:textSize="20dp" />
+                    android:textSize="20sp" />
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/bestRecordLayout"
+                android:gravity="center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp">
@@ -305,24 +306,26 @@
 
                 <TextView
                     android:id="@+id/resultBestRecord"
+                    android:gravity="center_vertical"
+                    android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@id/bestRecordText"
                     android:text="30/32"
-                    android:textSize="20dp" />
+                    android:textSize="20sp" />
 
             </RelativeLayout>
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/resultBeatRecord"
-                android:layout_marginTop="5dp"
-                android:textColor="@color/red"
-                android:text="Beat your record !"
-                android:layout_gravity="center"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:text="Beat your record !"
+                android:textColor="@color/red"
+                android:visibility="gone" />
 
 
         </LinearLayout>
@@ -358,8 +361,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
         android:gravity="center"
-        android:text="You can click on top right button > settings to set up a new challenge"
+        android:text="You can click on top right button > settings\nto increase/decrease the numbers"
         android:textColor="@color/red"
         android:textSize="12sp"
         android:textStyle="italic">
@@ -367,128 +371,140 @@
     </TextView>
 
     <RelativeLayout
-        android:id="@+id/controlPannel"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_alignParentBottom="true"
-        android:visibility="visible">
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true">
 
-        <LinearLayout
-            android:layout_marginLeft="5dp"
-            android:id="@+id/timerLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:gravity="center_vertical">
+        <RelativeLayout
+            android:id="@+id/controlPannel"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
+            android:visibility="visible">
 
-            <TextView
-                android:id="@+id/timeText"
+            <LinearLayout
+                android:id="@+id/timerLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:text="Time :"
-                android:textStyle="bold" />
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:gravity="center_vertical">
 
-            <TextView
-                android:id="@+id/time"
+                <TextView
+                    android:id="@+id/timeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="Time :"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="14 : 04" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:text="14 : 04" />
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="center">
 
-        </LinearLayout>
+                <RelativeLayout
+                    android:id="@+id/reStartBtn"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/circle_yellow"
+                    android:elevation="5dp">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:background="@android:color/transparent"
+                        android:shadowColor="@android:color/transparent"
+                        android:text="Restart"
+                        android:textColor="@android:color/white"
+                        android:textSize="10sp"
+                        android:textStyle="italic|bold" />
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/hintBtn"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/circle_pink"
+                    android:elevation="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:background="@android:color/transparent"
+                        android:shadowColor="@android:color/transparent"
+                        android:text="Hint"
+                        android:textColor="@android:color/white"
+                        android:textSize="12sp"
+                        android:textStyle="italic|bold" />
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/DoneBtn"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/circle_blue"
+                    android:elevation="5dp">
+
+                    <TextView
+                        android:id="@+id/doneBtnText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:background="@android:color/transparent"
+                        android:maxLines="2"
+                        android:shadowColor="@android:color/transparent"
+                        android:text="Done"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        android:textStyle="italic|bold" />
+
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+        <GridView
+            android:id="@+id/gridview"
+            android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:gravity="center">
-
-            <RelativeLayout
-                android:id="@+id/reStartBtn"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginLeft="10dp"
-                android:layout_centerInParent="true"
-                android:layout_marginRight="15dp"
-                android:background="@drawable/circle_yellow"
-                android:elevation="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:background="@android:color/transparent"
-                    android:shadowColor="@android:color/transparent"
-                    android:text="Restart"
-                    android:textColor="@android:color/white"
-                    android:textSize="10sp"
-                    android:textStyle="italic|bold" />
-
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/hintBtn"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_centerInParent="true"
-                android:layout_marginRight="15dp"
-                android:background="@drawable/circle_pink"
-                android:elevation="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:background="@android:color/transparent"
-                    android:shadowColor="@android:color/transparent"
-                    android:text="Hint"
-                    android:textColor="@android:color/white"
-                    android:textSize="12sp"
-                    android:textStyle="italic|bold" />
-
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/DoneBtn"
-                android:layout_marginRight="10dp"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/circle_blue"
-                android:elevation="5dp">
-
-                <TextView
-                    android:id="@+id/doneBtnText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:background="@android:color/transparent"
-                    android:maxLines="2"
-                    android:shadowColor="@android:color/transparent"
-                    android:text="Done"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp"
-                    android:textStyle="italic|bold" />
-
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
+            android:layout_above="@id/controlPannel"
+            android:background="@android:color/white"
+            android:clipToPadding="true"
+            android:gravity="center"
+            android:numColumns="5"
+            android:paddingBottom="2dp"
+            android:paddingTop="2dp"
+            android:stretchMode="columnWidth"
+            android:visibility="gone"></GridView>
 
     </RelativeLayout>
 
-    <GridView
-        android:id="@+id/gridview"
-        android:layout_above="@id/controlPannel"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:numColumns="5"
-        android:stretchMode="columnWidth"
-        android:visibility="gone"></GridView>
 
 </RelativeLayout>

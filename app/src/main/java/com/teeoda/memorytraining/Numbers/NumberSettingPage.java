@@ -10,15 +10,20 @@ import android.widget.Toast;
 
 import com.github.pwittchen.prefser.library.Prefser;
 import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.teeoda.memorytraining.R;
 import com.teeoda.memorytraining.global.BaseActivity;
+import com.teeoda.memorytraining.global.DialogHelper;
 import com.teeoda.memorytraining.global.G;
 import com.teeoda.memorytraining.global.NumberInputFilterMinMax;
+
+import rx.Observable;
 
 public class NumberSettingPage extends BaseActivity {
 
     NumberSettingDetail mSettingDetail;
     Prefser mPrefser;
+    boolean mModified = false;
 
     private EditText mTotolNum;
     private EditText mMinNum;
@@ -61,26 +66,28 @@ public class NumberSettingPage extends BaseActivity {
 
         RxView.focusChanges(mTotolNum).subscribe(r -> {
 
-            if (!mTotolNum.isFocused())
-            {
-                Log.d("yuan","total num unfocus");
+            if (!mTotolNum.isFocused()) {
+                Log.d("yuan", "total num unfocus");
                 if (mTotolNum.getText().toString().isEmpty())
                     mTotolNum.setText(mSettingDetail.totalNum + "");
                 else {
                     int num = Integer.valueOf(mTotolNum.getText().toString());
-                    if (num < 10)
-                    {
+                    if (num < 10) {
                         Toast.makeText(this, "The minimum total number is 10", Toast.LENGTH_SHORT).show();
                         num = 10;
                     }
-                    mSettingDetail.totalNum = num;
+
+                    if (mSettingDetail.totalNum != num)
+                    {
+                        mSettingDetail.totalNum = num;
+                        mModified = true;
+                    }
                 }
 
-                mTotolNum.setText(mSettingDetail.totalNum+"");
+                mTotolNum.setText(mSettingDetail.totalNum + "");
                 saveToPrefser();
 
-            }
-            else {
+            } else {
                 mTotolNum.setSelection(mTotolNum.length());
             }
 
@@ -99,7 +106,12 @@ public class NumberSettingPage extends BaseActivity {
                     mSettingDetail.maxNum = num;
                     mMaxNum.setText(mSettingDetail.maxNum+"");
                 }
-                mSettingDetail.minNum = num;
+
+                if (mSettingDetail.minNum != num)
+                {
+                    mSettingDetail.minNum = num;
+                    mModified = true;
+                }
 
                 mMinNum.setText(num+"");
                 saveToPrefser();
@@ -110,29 +122,34 @@ public class NumberSettingPage extends BaseActivity {
 
         });
 
-        RxView.focusChanges(mMaxNum).subscribe(r->{
+        RxView.focusChanges(mMaxNum).subscribe(r -> {
 
-            if (!mMaxNum.isFocused())
-            {
+            if (!mMaxNum.isFocused()) {
                 if (mMaxNum.getText().toString().isEmpty())
-                    mMaxNum.setText(mSettingDetail.maxNum+"");
+                    mMaxNum.setText(mSettingDetail.maxNum + "");
 
                 int num = Integer.valueOf(mMaxNum.getText().toString());
-                if (num < mSettingDetail.minNum)
-                {
+                if (num < mSettingDetail.minNum) {
                     mSettingDetail.minNum = num;
-                    mMinNum.setText(mSettingDetail.minNum+"");
+                    mMinNum.setText(mSettingDetail.minNum + "");
                 }
-                mSettingDetail.maxNum = num;
 
-                mMaxNum.setText(num+"");
+                if (mSettingDetail.maxNum != num)
+                {
+                    mModified = true;
+                    mSettingDetail.maxNum = num;
+                }
+
+                mMaxNum.setText(num + "");
                 saveToPrefser();
-            }
-            else {
+            } else {
                 mMaxNum.setSelection(mMaxNum.length());
             }
 
         });
+
+
+
     }
 
     void saveToPrefser()
@@ -142,9 +159,22 @@ public class NumberSettingPage extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+
         getCurrentFocus().clearFocus();
-        finish();
+
+        if (mModified)
+        {
+            DialogHelper.popupAlertDialog(this,null,DialogHelper.Message.applyChanges,"yes",()->{
+                NumbersPage.restart = true;
+                finish();
+            }, "No", ()->{
+                finish();
+            });
+        }
+        else
+        {
+            finish();
+        }
     }
 
     @Override
@@ -153,7 +183,18 @@ public class NumberSettingPage extends BaseActivity {
             case android.R.id.home:
                 // app icon in action bar clicked; goto parent activity.
                 getCurrentFocus().clearFocus();
-                finish();
+
+                if (mModified)
+                {
+                    DialogHelper.popupAlertDialog(this,null,DialogHelper.Message.applyChanges,"yes",()->{
+                        NumbersPage.restart = true;
+                        finish();
+                    }, "No", ()->{
+                        finish();
+                    });
+                }
+                else
+                    finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

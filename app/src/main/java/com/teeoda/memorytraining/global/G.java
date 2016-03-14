@@ -29,8 +29,9 @@ public class G {
         new Handler(Looper.getMainLooper()).post(runnable);
     }
 
-    static public void dismissKeyboard(Activity activity) {
+    static public void dismissKeyboard() {
 
+        Activity activity = BaseActivity.getCurrent();
         if (activity == null)
             return;
 
@@ -41,7 +42,9 @@ public class G {
         }
     }
 
-    static public void showKeyboard(Activity activity, View view) {
+    static public void showKeyboard(View view) {
+
+        Activity activity = BaseActivity.mCurrentActivity;
 
         if (activity == null || view == null)
             return;

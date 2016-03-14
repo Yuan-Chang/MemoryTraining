@@ -24,6 +24,11 @@ public class TimerTime {
         }
     }
 
+    public int toSeconds()
+    {
+        return hours*3600+minutes*60+seconds;
+    }
+
     @Override
     public String toString() {
 
@@ -32,6 +37,21 @@ public class TimerTime {
             s = minutes+"m "+s;
         if (hours > 0)
             s = hours+"h "+s;
+        return s;
+    }
+
+    public static String secondsToString(int seconds)
+    {
+        int h = seconds/3600;
+        seconds -= h*3600;
+        int m = seconds/60;
+        seconds -= m*60;
+
+        String s = seconds+"s";
+        if (m > 0)
+            s = m+"m "+s;
+        if (h > 0)
+            s = h+"h "+s;
         return s;
     }
 }
