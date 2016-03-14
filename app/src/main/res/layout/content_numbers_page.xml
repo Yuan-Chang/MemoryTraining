@@ -172,14 +172,21 @@
         android:layout_marginTop="80dp"
         android:background="@color/hintLightGray"
         android:elevation="10dp"
-        android:visibility="gone">
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/resultXBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_clear_black_24dp" />
 
         <RelativeLayout
             android:id="@+id/resultTitleLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="25dp">
 
             <TextView
                 android:id="@+id/resultTitleNum"
@@ -235,6 +242,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:visibility="gone"
                 android:id="@+id/hintUsedLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -290,10 +298,10 @@
 
             <RelativeLayout
                 android:id="@+id/bestRecordLayout"
-                android:gravity="center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/bestRecordText"
@@ -306,12 +314,12 @@
 
                 <TextView
                     android:id="@+id/resultBestRecord"
-                    android:gravity="center_vertical"
-                    android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@id/bestRecordText"
+                    android:gravity="center_vertical"
                     android:text="30/32"
                     android:textSize="20sp" />
 
@@ -347,7 +355,7 @@
                 android:background="@android:color/transparent"
                 android:gravity="center"
                 android:shadowColor="@android:color/transparent"
-                android:text="Start over"
+                android:text="Restart"
                 android:textColor="@android:color/white"
                 android:textSize="14sp"
                 android:textStyle="italic|bold" />
@@ -453,6 +461,30 @@
                         android:background="@android:color/transparent"
                         android:shadowColor="@android:color/transparent"
                         android:text="Hint"
+                        android:textColor="@android:color/white"
+                        android:textSize="12sp"
+                        android:textStyle="italic|bold" />
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/resultBtn"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/circle_pink"
+                    android:elevation="5dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:background="@android:color/transparent"
+                        android:shadowColor="@android:color/transparent"
+                        android:text="Result"
                         android:textColor="@android:color/white"
                         android:textSize="12sp"
                         android:textStyle="italic|bold" />

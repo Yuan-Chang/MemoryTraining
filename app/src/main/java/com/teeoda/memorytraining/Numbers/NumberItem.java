@@ -7,6 +7,7 @@ public class NumberItem {
     public int num = -1;
     public boolean showHint = false;
     public boolean isSelected = false;
+    public boolean showAnswer = false;
 
     public NumberItem(int num) {
         this.num = num;

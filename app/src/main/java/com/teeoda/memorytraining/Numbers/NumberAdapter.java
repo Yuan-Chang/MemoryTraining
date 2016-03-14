@@ -33,9 +33,14 @@ import rx.Subscription;
 public class NumberAdapter extends BaseAdapter {
 
     ArrayList<NumberItem> numbers;
+    ArrayList<NumberItem> answers;
 
     public NumberAdapter(ArrayList<NumberItem> data) {
         numbers = data;
+    }
+    public NumberAdapter(ArrayList<NumberItem> data, ArrayList<NumberItem> answers) {
+        numbers = data;
+        this.answers = answers;
     }
 
     @Override
@@ -68,6 +73,17 @@ public class NumberAdapter extends BaseAdapter {
 
         if(viewHolder.textChangedSubscription != null)
             viewHolder.textChangedSubscription.unsubscribe();
+
+        if (getItem(position).showAnswer && answers != null)
+        {
+            viewHolder.mCorrectNum.setText(answers.get(position).num+"");
+            viewHolder.mCorrectNum.setVisibility(View.VISIBLE);
+            viewHolder.mCossLine.setVisibility(View.VISIBLE);
+        }
+        else {
+            viewHolder.mCorrectNum.setVisibility(View.GONE);
+            viewHolder.mCossLine.setVisibility(View.GONE);
+        }
 
         int num = getItem(position).num;
         if (num > -1) {
@@ -116,7 +132,7 @@ public class NumberAdapter extends BaseAdapter {
     /**
      * ViewHolder class for layout.<br />
      * <br />
-     * Auto-created on 2016-03-12 20:03:33 by Android Layout Finder
+     * Auto-created on 2016-03-13 22:54:36 by Android Layout Finder
      * (http://www.buzzingandroid.com/tools/android-layout-finder)
      */
     private static class ViewHolder {
@@ -125,12 +141,16 @@ public class NumberAdapter extends BaseAdapter {
         public final CircleView mCircleView;
         public final EditText mEditText;
         public final TextView mTextView;
+        public final RelativeLayout mCossLine;
+        public final TextView mCorrectNum;
 
-        private ViewHolder(RelativeLayout mRoot, CircleView mCircleView, EditText mEditText, TextView mTextView) {
+        private ViewHolder(RelativeLayout mRoot, CircleView mCircleView, EditText mEditText, TextView mTextView, RelativeLayout mCossLine, TextView mCorrectNum) {
             this.mRoot = mRoot;
             this.mCircleView = mCircleView;
             this.mEditText = mEditText;
             this.mTextView = mTextView;
+            this.mCossLine = mCossLine;
+            this.mCorrectNum = mCorrectNum;
         }
 
         public static ViewHolder create(RelativeLayout rootView) {
@@ -138,7 +158,9 @@ public class NumberAdapter extends BaseAdapter {
             CircleView mCircleView = (CircleView)rootView.findViewById( R.id.circleView );
             EditText mEditText = (EditText)rootView.findViewById( R.id.editText );
             TextView mTextView = (TextView)rootView.findViewById( R.id.textView );
-            return new ViewHolder( mRoot, mCircleView, mEditText, mTextView );
+            RelativeLayout mCossLine = (RelativeLayout)rootView.findViewById( R.id.cossLine );
+            TextView mCorrectNum = (TextView)rootView.findViewById( R.id.correctNum );
+            return new ViewHolder( mRoot, mCircleView, mEditText, mTextView, mCossLine, mCorrectNum );
         }
     }
 

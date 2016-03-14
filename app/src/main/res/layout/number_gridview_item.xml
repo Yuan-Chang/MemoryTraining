@@ -45,6 +45,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <RelativeLayout
+            android:id="@+id/cossLine"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            android:text="1234"
+            android:layout_margin="5dp"
+            android:textSize="14sp"
+            android:background="@color/red_dark"
+            android:gravity="center"
+            android:clickable="false"
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <TextView
+            android:layout_below="@id/textView"
+            android:id="@+id/correctNum"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            android:text="1234"
+            android:textColor="@color/red"
+            android:textSize="12sp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:clickable="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </RelativeLayout>
 
 
