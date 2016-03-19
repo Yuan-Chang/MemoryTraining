@@ -9,6 +9,7 @@ import com.github.pwittchen.prefser.library.Prefser;
 import com.jakewharton.rxbinding.view.RxView;
 import com.teeoda.memorytraining.Numbers.NumberSettingDetail;
 import com.teeoda.memorytraining.Numbers.NumbersPage;
+import com.teeoda.memorytraining.RecordBoard.RecordPage;
 import com.teeoda.memorytraining.global.BaseActivity;
 import com.teeoda.memorytraining.global.G;
 
@@ -19,18 +20,21 @@ public class Homepage extends BaseActivity {
     private ImageView mBrainImage;
     private TextView mTitle;
     private TextView mNumberButton;
+    private TextView mRecordBoardButton;
 
     /**
      * Find the Views in the layout<br />
      * <br />
-     * Auto-created on 2016-02-28 13:17:11 by Android Layout Finder
+     * Auto-created on 2016-03-18 18:56:43 by Android Layout Finder
      * (http://www.buzzingandroid.com/tools/android-layout-finder)
      */
     private void findViews() {
         mBrainImage = (ImageView)findViewById( R.id.brainImage );
         mTitle = (TextView)findViewById( R.id.title );
         mNumberButton = (TextView)findViewById( R.id.numberButton );
+        mRecordBoardButton = (TextView)findViewById( R.id.recordBoardButton );
     }
+
 
     public void appInit()
     {
@@ -54,8 +58,14 @@ public class Homepage extends BaseActivity {
         findViews();
 
         RxView.clicks(mNumberButton).throttleFirst(400, TimeUnit.MILLISECONDS)
+                .subscribe(r -> {
+                    Intent intent = new Intent(this, NumbersPage.class);
+                    startActivity(intent);
+                });
+
+        RxView.clicks(mRecordBoardButton).throttleFirst(400, TimeUnit.MILLISECONDS)
                 .subscribe(r->{
-                    Intent intent = new Intent(this,NumbersPage.class);
+                    Intent intent = new Intent(this,RecordPage.class);
                     startActivity(intent);
                 });
 

@@ -49,7 +49,7 @@ public class NumbersPage extends BaseActivity {
     ArrayList<NumberItem> mNumbers;
     ArrayList<NumberItem> mFilledNumbers;
 
-    int mCurrentRoundNum = 1;
+    int mCurrentRoundNum = 0;
     rx.Subscription mTimerSub;
     TimerTime mTimerTime;
     int mHintUsed = 0;
@@ -72,7 +72,7 @@ public class NumbersPage extends BaseActivity {
     private TextView mMaxNum;
     private RelativeLayout mStartBtn;
     private RelativeLayout mResultLayout;
-    private ImageView mResultXBtn;
+    private RelativeLayout mResultXBtn;
     private RelativeLayout mResultTitleLayout;
     private TextView mResultTitleNum;
     private TextView mResultTitleText;
@@ -124,7 +124,7 @@ public class NumbersPage extends BaseActivity {
         mMaxNum = (TextView)findViewById( R.id.maxNum );
         mStartBtn = (RelativeLayout)findViewById( R.id.startBtn );
         mResultLayout = (RelativeLayout)findViewById( R.id.resultLayout );
-        mResultXBtn = (ImageView)findViewById( R.id.resultXBtn );
+        mResultXBtn = (RelativeLayout)findViewById( R.id.resultXBtn );
         mResultTitleLayout = (RelativeLayout)findViewById( R.id.resultTitleLayout );
         mResultTitleNum = (TextView)findViewById( R.id.resultTitleNum );
         mResultTitleText = (TextView)findViewById( R.id.resultTitleText );
@@ -242,7 +242,6 @@ public class NumbersPage extends BaseActivity {
 
         RxView.clicks(mResultStartOver).throttleFirst(400, TimeUnit.MILLISECONDS).subscribe(r -> {
             mResultBeatRecord.setVisibility(View.GONE);
-            mCurrentRoundNum++;
             showStartPage();
         });
 
@@ -279,6 +278,7 @@ public class NumbersPage extends BaseActivity {
 
     void showStartPage() {
         state = State.START;
+        mCurrentRoundNum++;
         mSettingDetail = G.getInstance().prefser.get(G.NumberSettingDetail, NumberSettingDetail.class, new NumberSettingDetail());
         mTotalNums.setText(mSettingDetail.totalNum + "");
         mMinNum.setText(mSettingDetail.minNum + "");
@@ -294,6 +294,7 @@ public class NumbersPage extends BaseActivity {
         mPreSelectedPos = -1;
         mFillingDone = false;
         mTimerLayout.setVisibility(View.VISIBLE);
+
 
         if (mFilledNumbers != null)
             mFilledNumbers.clear();
@@ -462,10 +463,11 @@ public class NumbersPage extends BaseActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // app icon in action bar clicked; goto parent activity.
+                G.dismissKeyboard();
                 this.finish();
                 return true;
             case R.id.restart:
-                mCurrentRoundNum = 1;
+                mCurrentRoundNum = 0;
                 showStartPage();
                 break;
             case R.id.settings:

@@ -5,6 +5,7 @@ import android.graphics.PorterDuff;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -73,6 +74,7 @@ public class NumberAdapter extends BaseAdapter {
 
         if(viewHolder.textChangedSubscription != null)
             viewHolder.textChangedSubscription.unsubscribe();
+        viewHolder.mEditText.setOnKeyListener(null);
 
         if (getItem(position).showAnswer && answers != null)
         {
@@ -124,6 +126,18 @@ public class NumberAdapter extends BaseAdapter {
                             getItem(position).num = -1;
                         Log.d("yuan", "number : " + r.toString());
                     });
+
+            final ViewHolder vh = viewHolder;
+            viewHolder.mEditText.setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    if(keyCode == KeyEvent.KEYCODE_DEL){
+                        vh.mEditText.setText("");
+                        getItem(position).num = -1;
+                    }
+                    return false;
+                }
+            });
         }
 
         return convertView;
