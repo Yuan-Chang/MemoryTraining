@@ -166,13 +166,16 @@ public class NumberSettingPage extends BaseActivity {
         {
             DialogHelper.popupAlertDialog(this,null,DialogHelper.Message.applyChanges,"yes",()->{
                 NumbersPage.restart = true;
+                G.dismissKeyboard();
                 finish();
             }, "No", ()->{
+                G.dismissKeyboard();
                 finish();
             });
         }
         else
         {
+            G.dismissKeyboard();
             finish();
         }
     }
@@ -188,13 +191,17 @@ public class NumberSettingPage extends BaseActivity {
                 {
                     DialogHelper.popupAlertDialog(this,null,DialogHelper.Message.applyChanges,"yes",()->{
                         NumbersPage.restart = true;
+                        G.dismissKeyboard();
                         finish();
                     }, "No", ()->{
+                        G.dismissKeyboard();
                         finish();
                     });
                 }
-                else
+                else{
+                    G.dismissKeyboard();
                     finish();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

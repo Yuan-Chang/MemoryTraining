@@ -25,6 +25,7 @@ import com.teeoda.memorytraining.global.TimerTime;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -55,6 +56,7 @@ public class NumbersPage extends BaseActivity {
     int mHintUsed = 0;
     int mPreSelectedPos = -1;
     boolean mFillingDone = false;
+    HashSet<Integer> mFilledNumCount;
 
 
     private RelativeLayout mStartLayout;
@@ -72,7 +74,6 @@ public class NumbersPage extends BaseActivity {
     private TextView mMaxNum;
     private RelativeLayout mStartBtn;
     private RelativeLayout mResultLayout;
-    private RelativeLayout mResultXBtn;
     private RelativeLayout mResultTitleLayout;
     private TextView mResultTitleNum;
     private TextView mResultTitleText;
@@ -89,23 +90,24 @@ public class NumbersPage extends BaseActivity {
     private TextView mBestRecordText;
     private TextView mResultBestRecord;
     private TextView mResultBeatRecord;
+    private RelativeLayout mResultXBtn;
     private RelativeLayout mResultStartOver;
     private TextView mAlertText;
     private RelativeLayout mControlPannel;
-    private LinearLayout mTimerLayout;
-    private TextView mTimeText;
-    private TextView mTime;
     private RelativeLayout mReStartBtn;
     private RelativeLayout mHintBtn;
     private RelativeLayout mResultBtn;
     private RelativeLayout mDoneBtn;
     private TextView mDoneBtnText;
     private GridView mGridview;
+    private LinearLayout mTimerLayout;
+    private TextView mTimeText;
+    private TextView mTime;
 
     /**
      * Find the Views in the layout<br />
      * <br />
-     * Auto-created on 2016-03-13 23:05:57 by Android Layout Finder
+     * Auto-created on 2016-03-19 09:10:14 by Android Layout Finder
      * (http://www.buzzingandroid.com/tools/android-layout-finder)
      */
     private void findViews() {
@@ -124,7 +126,6 @@ public class NumbersPage extends BaseActivity {
         mMaxNum = (TextView)findViewById( R.id.maxNum );
         mStartBtn = (RelativeLayout)findViewById( R.id.startBtn );
         mResultLayout = (RelativeLayout)findViewById( R.id.resultLayout );
-        mResultXBtn = (RelativeLayout)findViewById( R.id.resultXBtn );
         mResultTitleLayout = (RelativeLayout)findViewById( R.id.resultTitleLayout );
         mResultTitleNum = (TextView)findViewById( R.id.resultTitleNum );
         mResultTitleText = (TextView)findViewById( R.id.resultTitleText );
@@ -141,19 +142,21 @@ public class NumbersPage extends BaseActivity {
         mBestRecordText = (TextView)findViewById( R.id.bestRecordText );
         mResultBestRecord = (TextView)findViewById( R.id.resultBestRecord );
         mResultBeatRecord = (TextView)findViewById( R.id.resultBeatRecord );
+        mResultXBtn = (RelativeLayout)findViewById( R.id.resultXBtn );
         mResultStartOver = (RelativeLayout)findViewById( R.id.resultStartOver );
         mAlertText = (TextView)findViewById( R.id.alertText );
         mControlPannel = (RelativeLayout)findViewById( R.id.controlPannel );
-        mTimerLayout = (LinearLayout)findViewById( R.id.timerLayout );
-        mTimeText = (TextView)findViewById( R.id.timeText );
-        mTime = (TextView)findViewById( R.id.time );
         mReStartBtn = (RelativeLayout)findViewById( R.id.reStartBtn );
         mHintBtn = (RelativeLayout)findViewById( R.id.hintBtn );
         mResultBtn = (RelativeLayout)findViewById( R.id.resultBtn );
         mDoneBtn = (RelativeLayout)findViewById( R.id.DoneBtn );
         mDoneBtnText = (TextView)findViewById( R.id.doneBtnText );
         mGridview = (GridView)findViewById( R.id.gridview );
+        mTimerLayout = (LinearLayout)findViewById( R.id.timerLayout );
+        mTimeText = (TextView)findViewById( R.id.timeText );
+        mTime = (TextView)findViewById( R.id.time );
     }
+
 
 
 
@@ -194,44 +197,19 @@ public class NumbersPage extends BaseActivity {
             if (state == State.MEMORY)
                 showFillingPage();
             else if (state == State.FILLING) {
-                if (mFillingDone) {
+
+                String s = mDoneBtnText.getText().toString();
+                if (s.equals("Confirm")) {
                     showResultPage();
                 } else {
-                    mFillingDone = true;
-                    int current = mPreSelectedPos;
-                    if (current == -1) {
-                        mFillingDone = false;
-                        mFilledNumbers.get(0).isSelected = true;
-                        mPreSelectedPos = 0;
-                    } else {
-                        //go to next
-                        current++;
-                        current = current % mSettingDetail.totalNum;
+                    mFilledNumbers.get(mPreSelectedPos).isSelected = false;
+                    mPreSelectedPos = (mPreSelectedPos + 1) % mSettingDetail.totalNum;
+                    mFilledNumbers.get(mPreSelectedPos).isSelected = true;
+                    mFilledNumbers.get(mPreSelectedPos).num = -1;
 
-                        while (current != mPreSelectedPos) {
-                            if (mFilledNumbers.get(current).num == -1) {
-                                mFilledNumbers.get(mPreSelectedPos).isSelected = false;
-                                mPreSelectedPos = current;
-                                mFilledNumbers.get(current).isSelected = true;
-                                mFillingDone = false;
-                                break;
-                            }
-                            current++;
-                            current = current % mSettingDetail.totalNum;
-                        }
+                    mNumberAdpater.notifyDataSetChanged();
+                    mGridview.smoothScrollToPosition(mPreSelectedPos);
 
-                    }
-
-                    if (mFillingDone) {
-                        String s = mDoneBtnText.getText().toString();
-                        if (s.equals("Next"))
-                            mDoneBtnText.setText("Confirm");
-                        else if (s.equals("Confirm"))
-                            showResultPage();
-                    } else {
-                        mNumberAdpater.notifyDataSetChanged();
-                        mGridview.smoothScrollToPosition(mPreSelectedPos);
-                    }
                 }
             }
             else if (state == State.RESULT)
@@ -266,6 +244,11 @@ public class NumbersPage extends BaseActivity {
 
     }
 
+    public void switchNextToConfirm()
+    {
+        mDoneBtnText.setText("Confirm");
+    }
+
     void showHint() {
         mHintUsed++;
         for (int i = 0; i < mSettingDetail.totalNum; i++) {
@@ -293,7 +276,7 @@ public class NumbersPage extends BaseActivity {
         mTime.setText("0s");
         mPreSelectedPos = -1;
         mFillingDone = false;
-        mTimerLayout.setVisibility(View.VISIBLE);
+        mTimerLayout.setVisibility(View.GONE);
 
 
         if (mFilledNumbers != null)
@@ -381,6 +364,7 @@ public class NumbersPage extends BaseActivity {
         mHintBtn.setVisibility(View.GONE);
         mDoneBtnText.setText("Next");
         mControlPannel.bringToFront();
+        mTimerLayout.setVisibility(View.VISIBLE);
 
         if (mNumbers == null)
             mNumbers = new ArrayList<NumberItem>();
@@ -410,18 +394,23 @@ public class NumbersPage extends BaseActivity {
         for (int i = 0; i < mSettingDetail.totalNum; i++) {
             numbers.add(new NumberItem(-1));
         }
+        numbers.get(0).isSelected = true;
+        mPreSelectedPos = 0;
         mFilledNumbers = numbers;
 
-        mNumberAdpater = new NumberAdapter(mFilledNumbers, mNumbers);
-        mGridview.setAdapter(mNumberAdpater);
+        mFilledNumCount = new HashSet<>();
 
-        mGridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Observable.timer(200,TimeUnit.MILLISECONDS).subscribe(r->{
 
-
+            if (numbers.get(0).myEditText != null)
+            {
+                numbers.get(0).myEditText.requestFocus();
+                G.showKeyboard(numbers.get(0).myEditText);
             }
         });
+
+        mNumberAdpater = new NumberAdapter(mFilledNumbers, mNumbers, mFilledNumCount);
+        mGridview.setAdapter(mNumberAdpater);
 
         RxAdapterView.itemClicks(mGridview).throttleFirst(300, TimeUnit.MILLISECONDS)
                 .subscribe(position -> {
@@ -430,6 +419,7 @@ public class NumbersPage extends BaseActivity {
                     mPreSelectedPos = position;
 
                     mFilledNumbers.get(position).isSelected = true;
+                    mFilledNumbers.get(position).num = -1;
 
                     mGridview.smoothScrollToPosition(position);
 
@@ -468,6 +458,7 @@ public class NumbersPage extends BaseActivity {
                 return true;
             case R.id.restart:
                 mCurrentRoundNum = 0;
+                G.dismissKeyboard();
                 showStartPage();
                 break;
             case R.id.settings:

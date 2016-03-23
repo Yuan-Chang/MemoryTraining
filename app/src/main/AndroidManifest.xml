@@ -29,7 +29,7 @@
             android:windowSoftInputMode="stateAlwaysVisible" />
         <activity
             android:name=".RecordBoard.RecordPage"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>

@@ -24,6 +24,7 @@ import com.teeoda.memorytraining.global.CircleView;
 import com.teeoda.memorytraining.global.G;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
@@ -35,13 +36,15 @@ public class NumberAdapter extends BaseAdapter {
 
     ArrayList<NumberItem> numbers;
     ArrayList<NumberItem> answers;
+    HashSet<Integer> filledNumCount;
 
     public NumberAdapter(ArrayList<NumberItem> data) {
         numbers = data;
     }
-    public NumberAdapter(ArrayList<NumberItem> data, ArrayList<NumberItem> answers) {
+    public NumberAdapter(ArrayList<NumberItem> data, ArrayList<NumberItem> answers, HashSet filledNumCount) {
         numbers = data;
         this.answers = answers;
+        this.filledNumCount = filledNumCount;
     }
 
     @Override
@@ -97,6 +100,8 @@ public class NumberAdapter extends BaseAdapter {
             viewHolder.mEditText.setText("");
         }
 
+        getItem(position).myEditText = viewHolder.mEditText;
+
         if (NumbersPage.state != NumbersPage.State.FILLING || !getItem(position).isSelected) {
 
             viewHolder.mEditText.setVisibility(View.GONE);
@@ -121,9 +126,20 @@ public class NumberAdapter extends BaseAdapter {
             viewHolder.textChangedSubscription = RxTextView.textChanges(viewHolder.mEditText)
                     .subscribe(r -> {
                         if (!r.toString().isEmpty())
+                        {
                             getItem(position).num = Integer.valueOf(r.toString());
+                            filledNumCount.add(position);
+                            Log.d("yuan", "add count");
+
+                            if (filledNumCount.size() == answers.size())
+                                ((NumbersPage)BaseActivity.getCurrent()).switchNextToConfirm();
+                        }
                         else
+                        {
                             getItem(position).num = -1;
+                            filledNumCount.remove(position);
+                            Log.d("yuan", "remove count");
+                        }
                         Log.d("yuan", "number : " + r.toString());
                     });
 
@@ -131,7 +147,7 @@ public class NumberAdapter extends BaseAdapter {
             viewHolder.mEditText.setOnKeyListener(new View.OnKeyListener() {
                 @Override
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    if(keyCode == KeyEvent.KEYCODE_DEL){
+                    if (keyCode == KeyEvent.KEYCODE_DEL) {
                         vh.mEditText.setText("");
                         getItem(position).num = -1;
                     }
