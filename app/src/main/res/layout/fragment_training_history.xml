@@ -1,16 +1,34 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".RecordBoard.TrainingHistoryFrag">
 
-    <!-- TODO: Update blank fragment layout -->
     <TableLayout
-        android:id="@+id/tableLayout"
+        android:orientation="vertical"
+        android:id="@+id/tableColumns"
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
     </TableLayout>
 
-</FrameLayout>
+    <!-- TODO: Update blank fragment layout -->
+    <com.teeoda.memorytraining.global.InteractiveScrollView
+        android:id="@+id/scrollView"
+        android:layout_below="@id/tableColumns"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableLayout
+            android:orientation="vertical"
+            android:id="@+id/tableLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </TableLayout>
+
+    </com.teeoda.memorytraining.global.InteractiveScrollView>
+
+
+</RelativeLayout>

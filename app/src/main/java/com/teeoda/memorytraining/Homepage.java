@@ -12,6 +12,7 @@ import com.teeoda.memorytraining.Numbers.NumbersPage;
 import com.teeoda.memorytraining.RecordBoard.RecordPage;
 import com.teeoda.memorytraining.global.BaseActivity;
 import com.teeoda.memorytraining.global.G;
+import com.teeoda.memorytraining.global.GreenDAO.DBHelper;
 
 import java.util.concurrent.TimeUnit;
 
@@ -44,6 +45,10 @@ public class Homepage extends BaseActivity {
 
         if (!prefser.contains(G.NumberSettingDetail))
             prefser.put(G.NumberSettingDetail,new NumberSettingDetail());
+
+        //initialize sqlite
+        DBHelper.getInstance();
+        //DBHelper.getInstance().getTrainingHitoryDAO().deleteAll();
 
     }
 

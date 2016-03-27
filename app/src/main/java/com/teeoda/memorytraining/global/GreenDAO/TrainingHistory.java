@@ -10,8 +10,9 @@ public class TrainingHistory {
     private String type;
     private Integer total;
     private Integer correctNum;
-    private String timeSpent;
+    private Integer timeSpent;
     private java.util.Date date;
+    private Boolean isBest;
 
     public TrainingHistory() {
     }
@@ -20,13 +21,14 @@ public class TrainingHistory {
         this.id = id;
     }
 
-    public TrainingHistory(Long id, String type, Integer total, Integer correctNum, String timeSpent, java.util.Date date) {
+    public TrainingHistory(Long id, String type, Integer total, Integer correctNum, Integer timeSpent, java.util.Date date, Boolean isBest) {
         this.id = id;
         this.type = type;
         this.total = total;
         this.correctNum = correctNum;
         this.timeSpent = timeSpent;
         this.date = date;
+        this.isBest = isBest;
     }
 
     public Long getId() {
@@ -61,11 +63,11 @@ public class TrainingHistory {
         this.correctNum = correctNum;
     }
 
-    public String getTimeSpent() {
+    public Integer getTimeSpent() {
         return timeSpent;
     }
 
-    public void setTimeSpent(String timeSpent) {
+    public void setTimeSpent(Integer timeSpent) {
         this.timeSpent = timeSpent;
     }
 
@@ -75,6 +77,14 @@ public class TrainingHistory {
 
     public void setDate(java.util.Date date) {
         this.date = date;
+    }
+
+    public Boolean getIsBest() {
+        return isBest;
+    }
+
+    public void setIsBest(Boolean isBest) {
+        this.isBest = isBest;
     }
 
 }

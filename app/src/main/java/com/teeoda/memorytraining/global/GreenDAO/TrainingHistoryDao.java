@@ -27,8 +27,9 @@ public class TrainingHistoryDao extends AbstractDao<TrainingHistory, Long> {
         public final static Property Type = new Property(1, String.class, "type", false, "TYPE");
         public final static Property Total = new Property(2, Integer.class, "total", false, "TOTAL");
         public final static Property CorrectNum = new Property(3, Integer.class, "correctNum", false, "CORRECT_NUM");
-        public final static Property TimeSpent = new Property(4, String.class, "timeSpent", false, "TIME_SPENT");
+        public final static Property TimeSpent = new Property(4, Integer.class, "timeSpent", false, "TIME_SPENT");
         public final static Property Date = new Property(5, java.util.Date.class, "date", false, "DATE");
+        public final static Property IsBest = new Property(6, Boolean.class, "isBest", false, "IS_BEST");
     };
 
 
@@ -48,8 +49,9 @@ public class TrainingHistoryDao extends AbstractDao<TrainingHistory, Long> {
                 "\"TYPE\" TEXT," + // 1: type
                 "\"TOTAL\" INTEGER," + // 2: total
                 "\"CORRECT_NUM\" INTEGER," + // 3: correctNum
-                "\"TIME_SPENT\" TEXT," + // 4: timeSpent
-                "\"DATE\" INTEGER);"); // 5: date
+                "\"TIME_SPENT\" INTEGER," + // 4: timeSpent
+                "\"DATE\" INTEGER," + // 5: date
+                "\"IS_BEST\" INTEGER);"); // 6: isBest
     }
 
     /** Drops the underlying database table. */
@@ -83,14 +85,19 @@ public class TrainingHistoryDao extends AbstractDao<TrainingHistory, Long> {
             stmt.bindLong(4, correctNum);
         }
  
-        String timeSpent = entity.getTimeSpent();
+        Integer timeSpent = entity.getTimeSpent();
         if (timeSpent != null) {
-            stmt.bindString(5, timeSpent);
+            stmt.bindLong(5, timeSpent);
         }
  
         java.util.Date date = entity.getDate();
         if (date != null) {
             stmt.bindLong(6, date.getTime());
+        }
+ 
+        Boolean isBest = entity.getIsBest();
+        if (isBest != null) {
+            stmt.bindLong(7, isBest ? 1L: 0L);
         }
     }
 
@@ -108,8 +115,9 @@ public class TrainingHistoryDao extends AbstractDao<TrainingHistory, Long> {
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // type
             cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // total
             cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // correctNum
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // timeSpent
-            cursor.isNull(offset + 5) ? null : new java.util.Date(cursor.getLong(offset + 5)) // date
+            cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4), // timeSpent
+            cursor.isNull(offset + 5) ? null : new java.util.Date(cursor.getLong(offset + 5)), // date
+            cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0 // isBest
         );
         return entity;
     }
@@ -121,8 +129,9 @@ public class TrainingHistoryDao extends AbstractDao<TrainingHistory, Long> {
         entity.setType(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setTotal(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
         entity.setCorrectNum(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
-        entity.setTimeSpent(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setTimeSpent(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
         entity.setDate(cursor.isNull(offset + 5) ? null : new java.util.Date(cursor.getLong(offset + 5)));
+        entity.setIsBest(cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0);
      }
     
     /** @inheritdoc */

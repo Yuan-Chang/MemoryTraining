@@ -21,14 +21,22 @@ import com.jakewharton.rxbinding.widget.RxAdapterView;
 import com.teeoda.memorytraining.R;
 import com.teeoda.memorytraining.global.BaseActivity;
 import com.teeoda.memorytraining.global.G;
+import com.teeoda.memorytraining.global.GreenDAO.DBHelper;
+import com.teeoda.memorytraining.global.GreenDAO.TrainingHistory;
+import com.teeoda.memorytraining.global.GreenDAO.TrainingHistoryDao;
 import com.teeoda.memorytraining.global.TimerTime;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import de.greenrobot.dao.async.AsyncOperation;
+import de.greenrobot.dao.async.AsyncOperationListener;
+import de.greenrobot.dao.query.QueryBuilder;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -180,12 +188,7 @@ public class NumbersPage extends BaseActivity {
             showMemoryPage();
 
             mTimerTime = new TimerTime();
-            mTimerSub = rx.Observable.interval(1, TimeUnit.SECONDS)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(r1 -> {
-                        mTimerTime.increase();
-                        mTime.setText(mTimerTime.toString());
-                    });
+            startTimer();
 
         });
 
@@ -242,6 +245,16 @@ public class NumbersPage extends BaseActivity {
         });
 
 
+    }
+
+    void startTimer()
+    {
+        mTimerSub = rx.Observable.interval(1, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(r1 -> {
+                    mTimerTime.increase();
+                    mTime.setText(mTimerTime.toString());
+                });
     }
 
     public void switchNextToConfirm()
@@ -327,27 +340,64 @@ public class NumbersPage extends BaseActivity {
         }
         mResultCorrectness.setText(String.format("%d/%d", correctNum, mSettingDetail.totalNum));
 
-        Prefser prefser = G.getInstance().prefser;
-        String key = "NumberHistroy:" + mSettingDetail.totalNum;
-        int record = prefser.get(key, Integer.class, -1);
-        if (record == -1) {
-            prefser.put(key, mTimerTime.toSeconds());
-        } else if (record > mTimerTime.toSeconds() && correctNum == mSettingDetail.totalNum) {
-            prefser.put(key, mTimerTime.toSeconds());
-            record = mTimerTime.toSeconds();
-            mResultBeatRecord.setVisibility(View.VISIBLE);
-        }
-        String sTime = TimerTime.secondsToString(record);
-        mResultBestRecord.setText(sTime);
-        if (sTime.length() > 7)
-            mResultBestRecord.setTextSize(14);
-        else
-            mResultBestRecord.setTextSize(20);
+        //get the best record
+        TrainingHistoryDao trainingHistoryDao = DBHelper.getInstance().getTrainingHitoryDAO();
+        QueryBuilder builder = DBHelper.getInstance().getTrainingHitoryDAO().queryBuilder();
+        builder.where(TrainingHistoryDao.Properties.Type.eq("Number"));
+        builder.where(TrainingHistoryDao.Properties.Total.eq(mSettingDetail.totalNum));
+        builder.where(TrainingHistoryDao.Properties.IsBest.eq(true));
+        builder.limit(1).build();
+        List<TrainingHistory> list = builder.list();
 
-        if (record == -1)
-            mBestRecordLayout.setVisibility(View.GONE);
+        mResultBestRecord.setVisibility(View.VISIBLE);
+        mBestRecordText.setVisibility(View.VISIBLE);
+        mResultBeatRecord.setVisibility(View.GONE);
+        int bestRecordTime = mTimerTime.toSeconds();
+        int newTime = mTimerTime.toSeconds();
+        if (!list.isEmpty())
+        {
+            TrainingHistory entry = list.get(0);
+
+            if (entry.getTimeSpent() > newTime && mSettingDetail.totalNum == correctNum)
+            {
+                //break record
+                entry.setIsBest(false);
+                trainingHistoryDao.update(entry);
+                mResultBeatRecord.setVisibility(View.VISIBLE);
+
+                TrainingHistory newEntry = new TrainingHistory(null,"Number",mSettingDetail.totalNum,correctNum,mTimerTime.toSeconds(),new Date(),true);
+                trainingHistoryDao.insert(newEntry);
+            }
+            else
+            {
+                //not break record
+                bestRecordTime = entry.getTimeSpent();
+
+                TrainingHistory newEntry = new TrainingHistory(null,"Number",mSettingDetail.totalNum,correctNum,mTimerTime.toSeconds(),new Date(),false);
+                trainingHistoryDao.insert(newEntry);
+            }
+        }
         else
-            mBestRecordLayout.setVisibility(View.VISIBLE);
+        {
+            //first record
+            TrainingHistory newEntry = new TrainingHistory(null,"Number",mSettingDetail.totalNum,correctNum,mTimerTime.toSeconds(),new Date(),mSettingDetail.totalNum == correctNum);
+            trainingHistoryDao.insert(newEntry);
+
+            mBestRecordText.setVisibility(View.GONE);
+            mResultBestRecord.setVisibility(View.GONE);
+
+        }
+
+        String sTime = TimerTime.secondsToString(bestRecordTime);
+        mResultBestRecord.setText(sTime);
+
+
+//        for (int i=0;i<400;i++)
+//        {
+//            TrainingHistory entry = new TrainingHistory(null,"Number",mSettingDetail.totalNum,i,mTimerTime.toString(),new Date(),false);
+//            DBHelper.getInstance().getTrainingHitoryDAO().insert(entry);
+//        }
+
 
     }
 
@@ -446,6 +496,11 @@ public class NumbersPage extends BaseActivity {
             restart = false;
             showStartPage();
         }
+
+        if (state == State.MEMORY || state == State.FILLING)
+        {
+            startTimer();
+        }
     }
 
     @Override
@@ -474,5 +529,16 @@ public class NumbersPage extends BaseActivity {
         int randomNum = rand.nextInt((max - min) + 1) + min;
         return randomNum;
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (state == State.MEMORY || state == State.FILLING)
+        {
+            mTimerSub.unsubscribe();
+        }
+    }
+
 
 }

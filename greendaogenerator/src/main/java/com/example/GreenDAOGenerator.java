@@ -9,7 +9,7 @@ import de.greenrobot.daogenerator.Schema;
 
 public class GreenDAOGenerator {
     public static void main(String[] args) throws Exception {
-        Schema schema = new Schema(1, "com.teeoda.memorytraining.global.GreenDAO");
+        Schema schema = new Schema(2, "com.teeoda.memorytraining.global.GreenDAO");
 
         addTrainingHistory(schema);
 
@@ -22,7 +22,9 @@ public class GreenDAOGenerator {
         entry.addStringProperty("type");
         entry.addIntProperty("total");
         entry.addIntProperty("correctNum");
-        entry.addStringProperty("timeSpent");
+        entry.addIntProperty("timeSpent");
         entry.addDateProperty("date");
+        entry.addBooleanProperty("isBest");
     }
+
 }
