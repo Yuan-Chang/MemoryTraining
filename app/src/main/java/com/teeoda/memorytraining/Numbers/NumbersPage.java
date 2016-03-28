@@ -19,6 +19,7 @@ import com.github.pwittchen.prefser.library.Prefser;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxAdapterView;
 import com.teeoda.memorytraining.R;
+import com.teeoda.memorytraining.RecordBoard.RecordPage;
 import com.teeoda.memorytraining.global.BaseActivity;
 import com.teeoda.memorytraining.global.G;
 import com.teeoda.memorytraining.global.GreenDAO.DBHelper;
@@ -519,6 +520,10 @@ public class NumbersPage extends BaseActivity {
             case R.id.settings:
                 Intent intent = new Intent(this, NumberSettingPage.class);
                 startActivity(intent);
+                break;
+            case R.id.recordBoard:
+                Intent intent2 = new Intent(this, RecordPage.class);
+                startActivity(intent2);
                 break;
         }
         return super.onOptionsItemSelected(item);

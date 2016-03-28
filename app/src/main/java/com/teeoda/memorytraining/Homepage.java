@@ -48,7 +48,6 @@ public class Homepage extends BaseActivity {
 
         //initialize sqlite
         DBHelper.getInstance();
-        //DBHelper.getInstance().getTrainingHitoryDAO().deleteAll();
 
     }
 
