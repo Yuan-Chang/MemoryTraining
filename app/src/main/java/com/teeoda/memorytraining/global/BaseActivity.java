@@ -1,10 +1,9 @@
 package com.teeoda.memorytraining.global;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.*;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;

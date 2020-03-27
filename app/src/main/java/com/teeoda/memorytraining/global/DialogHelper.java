@@ -5,9 +5,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AlertDialog;
 
-import com.teeoda.memorytraining.R;
+import androidx.appcompat.app.AlertDialog;
 
 /**
  * Created by home on 3/8/16.

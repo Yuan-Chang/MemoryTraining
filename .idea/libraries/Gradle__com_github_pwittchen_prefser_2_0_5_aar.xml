@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.pwittchen:prefser:2.0.5@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/55fc6b3e78c550e94b18f7d76fca04ac/jetified-prefser-2.0.5/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/55fc6b3e78c550e94b18f7d76fca04ac/jetified-prefser-2.0.5/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.pwittchen/prefser/2.0.5/828bab004a0570b1fb0497b569c1b7a6d49c1ea9/prefser-2.0.5-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.pwittchen/prefser/2.0.5/dda75942a83af9e425200af50d264f7d6b3c8937/prefser-2.0.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

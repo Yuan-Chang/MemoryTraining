@@ -1,6 +1,5 @@
 package com.teeoda.memorytraining.Numbers;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.util.Log;
@@ -10,14 +9,11 @@ import android.widget.Toast;
 
 import com.github.pwittchen.prefser.library.Prefser;
 import com.jakewharton.rxbinding.view.RxView;
-import com.jakewharton.rxbinding.widget.RxTextView;
 import com.teeoda.memorytraining.R;
 import com.teeoda.memorytraining.global.BaseActivity;
 import com.teeoda.memorytraining.global.DialogHelper;
 import com.teeoda.memorytraining.global.G;
 import com.teeoda.memorytraining.global.NumberInputFilterMinMax;
-
-import rx.Observable;
 
 public class NumberSettingPage extends BaseActivity {
 

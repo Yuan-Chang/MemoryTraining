@@ -1,10 +1,12 @@
 package com.teeoda.memorytraining.RecordBoard;
 
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
+
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 import com.teeoda.memorytraining.R;
 import com.teeoda.memorytraining.global.BaseActivity;
 
